@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>轻导航</title>
+    <link rel="icon" href="icons/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 标题栏 -->
+        <header>
+            <h1 class="title">轻导航</h1>
+            <div class="actions">
+                <button id="btnCheckSite" class="btn-check">检测是否可以访问</button>
+                <button id="btnClear" class="btn-clear"><i class="fas fa-times"></i> 清除测试结果</button>
+                <button id="btnSettings" class="btn-settings"><i class="fas fa-cog"></i> 设置</button>
+            </div>
+        </header>
+
+        <!-- 导航栏 -->
+        <div class="nav-bar">
+            <div class="chip">
+                <div class="chip__icon">
+                  <ion-icon name="color-palette"></ion-icon>
+                </div>
+                <p id="dangqiansj"></p>
+                <div class="chip__close">
+                  <ion-icon name=""></ion-icon>
+                </div>
+            </div>
+            <div class="nav-tabs">
+                <button class="nav-tab active" data-tab="site">站内</button>
+                <button class="nav-tab" data-tab="must">必应</button>
+                <button class="nav-tab" data-tab="baidu">百度</button>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="输入关键字，按Enter搜索">
+                <button id="btnSearch"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+
+        <!-- 链接容器 - 将被JS动态填充 -->
+        <div id="linksContainer">
+            <!-- 链接将通过JavaScript动态生成 -->
+        </div>
+
+        <!-- 密码验证模态框 -->
+        <div id="passwordModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>安全验证</h2>
+                <form id="passwordForm">
+                    <div class="form-group">
+                        <label for="adminPassword">请输入管理密码：</label>
+                        <input type="password" id="adminPassword" autocomplete="current-password" required>
+                    </div>
+                    <button type="submit" class="btn-submit">验证</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 添加新网址的表单弹窗 -->
+        <div id="addLinkModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>添加新网址</h2>
+                <form id="addLinkForm">
+                    <div class="form-group">
+                        <label for="categoryType">分类选项：</label>
+                        <select id="categoryType" required>
+                            <option value="existing">选择现有分类</option>
+                            <option value="new">创建新分类</option>
+                        </select>
+                    </div>
+                    
+                    <!-- 现有分类选择 -->
+                    <div class="form-group" id="existingCategoryGroup">
+                        <label for="categorySelect">选择分类：</label>
+                        <select id="categorySelect" required>
+                            <!-- 分类选项通过JavaScript动态生成 -->
+                        </select>
+                    </div>
+                    
+                    <!-- 新分类输入 -->
+                    <div class="form-group" id="newCategoryGroup" style="display: none;">
+                        <label for="newCategoryName">新分类名称：</label>
+                        <input type="text" id="newCategoryName">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="linkTitle">标题：</label>
+                        <input type="text" id="linkTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="linkUrl">URL：</label>
+                        <input type="url" id="linkUrl" required placeholder="https://">
+                    </div>
+                    <button type="submit" class="btn-submit">保存</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 编辑网址的表单弹窗 -->
+        <div id="editLinkModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>编辑网址</h2>
+                <form id="editLinkForm">
+                    <!-- 隐藏字段保存链接ID和原始分类ID -->
+                    <input type="hidden" id="editLinkId">
+                    <input type="hidden" id="linkCategoryId">
+                    
+                    <div class="form-group">
+                        <label for="editCategorySelect">分类：</label>
+                        <select id="editCategorySelect" required>
+                            <!-- 分类选项通过JavaScript动态生成 -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editLinkTitle">标题：</label>
+                        <input type="text" id="editLinkTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editLinkUrl">URL：</label>
+                        <input type="url" id="editLinkUrl" required placeholder="https://">
+                    </div>
+                    <button type="submit" class="btn-submit">保存修改</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 添加新分类的弹窗 -->
+        <div id="addCategoryModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>添加新分类</h2>
+                <form id="addCategoryForm">
+                    <div class="form-group">
+                        <label for="newCategoryTitle">分类名称</label>
+                        <input type="text" id="newCategoryTitle" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">添加</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 管理分类模态框 -->
+        <div id="manageCategoriesModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>管理分类</h2>
+                <div id="manageCategoriesList" class="categories-list">
+                    <!-- 分类列表将通过JS动态生成 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 编辑分类模态框 -->
+        <div id="editCategoryModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>编辑分类</h2>
+                <form id="editCategoryForm">
+                    <input type="hidden" id="editCategoryId">
+                    <div class="form-group">
+                        <label for="editCategoryTitle">分类名称</label>
+                        <input type="text" id="editCategoryTitle" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 设置模态框 -->
+        <div id="settingsModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>系统设置</h2>
+                <div class="settings-tabs">
+                    <button class="settings-tab active" data-tab="password">密码设置</button>
+                    <button class="settings-tab" data-tab="wallpaper">壁纸设置</button>
+                    <button class="settings-tab" data-tab="category">分类管理</button>
+                </div>
+                
+                <div class="settings-content">
+                    <!-- 密码设置 -->
+                    <div class="settings-pane active" id="passwordPane">
+                        <form id="changePasswordForm">
+                            <div class="form-group">
+                                <label for="currentPassword">当前密码：</label>
+                                <input type="password" id="currentPassword" autocomplete="current-password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword">新密码：</label>
+                                <input type="password" id="newPassword" autocomplete="new-password" required minlength="6">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword">确认新密码：</label>
+                                <input type="password" id="confirmPassword" autocomplete="new-password" required minlength="6">
+                            </div>
+                            <div class="password-requirements">
+                                <p>密码要求：</p>
+                                <ul>
+                                    <li>至少6个字符</li>
+                                    <li>不能与当前密码相同</li>
+                                </ul>
+                            </div>
+                            <button type="submit" class="btn-submit">修改密码</button>
+                        </form>
+                    </div>
+                    
+                    <!-- 壁纸设置 -->
+                    <div class="settings-pane" id="wallpaperPane">
+                        <div class="form-group">
+                            <button type="button" id="openWallpaperModal" class="btn-submit">打开壁纸设置</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 分类管理 -->
+                    <div class="settings-pane" id="categoryPane">
+                        <div class="category-management">
+                            <h3>管理分类</h3>
+                            
+                            <div class="category-actions">
+                                <button type="button" id="btnAddCategory" class="btn-action">
+                                    <i class="fas fa-plus"></i> 添加新分类
+                                </button>
+                            </div>
+                            
+                            <div id="settingsCategoriesList" class="categories-list">
+                                <!-- 分类列表将通过JS动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部说明 -->
+        <footer>
+            <div class="footer-content">
+                <h3>网站使用说明</h3>
+                <p>点击右侧角按钮可以添加新的网址。点击每个网址卡片可以编辑，点击右上角的删除图标可以删除网址。左侧导航栏可以按分类筛选。</p>
+            </div>
+        </footer>
+
+        <!-- 悬浮添加按钮 -->
+        <button id="btnShowAddModal" class="float-btn">+</button>
+
+        <!-- 设置按钮 -->
+        <div class="setting-btn">
+          <span class="iconfont icon-setting"></span>
+        </div>
+        
+    </div>
+
+    <!-- 壁纸设置弹窗 -->
+    <div class="modal" id="wallpaperModal">
+        <div class="modal-content wallpaper-modal-container">
+            <div class="wallpaper-modal-header">
+                <h2>壁纸偏好</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="wallpaper-modal-body">
+                <div class="wallpaper-tabs">
+                    <button class="wallpaper-tab active" data-tab="upload">本地图片</button>
+                    <button class="wallpaper-tab" data-tab="link">在线图片链接</button>
+                </div>
+                
+                <!-- 本地上传面板 -->
+                <div class="wallpaper-tab-pane active" id="uploadPane">
+                    <div class="wallpaper-file-input">
+                        <div class="wallpaper-upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <div class="wallpaper-upload-text">将您喜爱的图片或视频设为壁纸</div>
+                        <div class="wallpaper-upload-hint">支持选择多张本地图片，起始页每次加载时随机显示一张</div>
+                        
+                        <div class="wallpaper-file-wrapper">
+                            <button class="wallpaper-btn-primary" id="selectFileBtn">
+                                <i class="fas fa-folder-open"></i> 本地图片 / 视频
+                            </button>
+                            <input type="file" id="wallpaperFile" accept="image/*" hidden>
+                        </div>
+                    </div>
+                    
+                    <div class="file-input-preview">
+                        <img id="wallpaperPreview" src="" alt="预览" style="display: none;">
+                    </div>
+                </div>
+                
+                <!-- 链接面板 -->
+                <div class="wallpaper-tab-pane" id="linkPane">
+                    <div class="wallpaper-file-input">
+                        <div class="wallpaper-upload-icon">
+                            <i class="fas fa-link"></i>
+                        </div>
+                        <div class="wallpaper-upload-text">使用在线图片链接</div>
+                        <div class="wallpaper-upload-hint">输入图片的URL地址</div>
+                        
+                        <div class="form-group" style="margin-top: 20px;">
+                            <input type="url" id="wallpaperUrl" placeholder="https://example.com/image.jpg">
+                        </div>
+                        <button class="wallpaper-btn-primary" id="fetchUrlBtn">
+                            <i class="fas fa-download"></i> 获取图片
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 历史壁纸 -->
+                <div class="wallpaper-history">
+                    <h3>历史壁纸</h3>
+                    <div id="wallpaperHistoryGrid" class="wallpaper-grid">
+                        <!-- 历史壁纸将通过JavaScript动态生成 -->
+                    </div>
+                    
+                    <div class="wallpaper-btn-group">
+                        <button class="wallpaper-btn-secondary" id="clearCurrentWallpaper">
+                            <i class="fas fa-undo"></i> 恢复默认背景
+                        </button>
+                        <button class="wallpaper-btn-danger" id="clearAllWallpapers">
+                            <i class="fas fa-trash-alt"></i> 清除所有壁纸
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script type='module' src='https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.esm.js'></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html> 

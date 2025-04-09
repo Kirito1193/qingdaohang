@@ -1,0 +1,48 @@
+{
+  "categories": [
+    {
+      "id": "test",
+      "name": "test",
+      "links": [
+        {
+          "id": "1744237316239",
+          "title": "abc",
+          "url": "https://img.picui.cn/free/2025/04/10/67f6deb05d623.jpg"
+        }
+      ]
+    },
+    {
+      "id": "category1744229024174",
+      "name": "兴趣",
+      "links": [
+        {
+          "id": "1744229024183",
+          "title": "测试",
+          "url": "http://192.168.3.54:10086/apps/installed"
+        }
+      ]
+    },
+    {
+      "id": "category1744229172554",
+      "name": "爱好",
+      "links": [
+        {
+          "id": "1744229172562",
+          "title": "粮贸",
+          "url": "https://wwyz.lanzoup.com/i3xF52slpelc"
+        }
+      ]
+    },
+    {
+      "id": "category1744234264297",
+      "name": "露蒂丝",
+      "links": [
+        {
+          "id": "3",
+          "title": "测试网",
+          "url": "https://oa-example.com"
+        }
+      ]
+    }
+  ]
+}
