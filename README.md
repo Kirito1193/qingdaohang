@@ -23,13 +23,13 @@
 ![壁纸设置](image/壁纸设置.png)
 
 壁纸设置-上传本地图片
-![上传本地图片](images/壁纸偏好.png)
+![上传本地图片](image/壁纸偏好.png)
 
 壁纸设置-url获取图片
-![url获取图片](images/在线壁纸url.png)
+![url获取图片](image/在线壁纸url.png)
 
 设置-分类管理
-![分类管理](images/分类管理.png)
+![分类管理](image/分类管理.png)
 
 
 ## 项目简介
