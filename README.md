@@ -26,7 +26,7 @@
 ![上传本地图片](image/壁纸偏好.png)
 
 壁纸设置-url获取图片
-![url获取图片](image/在线壁纸url.png)
+![url获取图片](image/在线壁纸偏好.png)
 
 设置-分类管理
 ![分类管理](image/分类管理.png)
